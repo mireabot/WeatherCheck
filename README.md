@@ -23,7 +23,7 @@ Forecast iOS app which provides live temparature and description both ways: **se
     <td>Add city</td>
   </tr>
   <tr>
-    <td><img src="https://user-images.githubusercontent.com/100859587/177045139-c030b88b-f546-4b7a-bcb6-7be28b734ec8.mp4"></td>
+    <td><img src="https://github.com/mireabot/WeatherCheck/blob/main/WeatherAdd.png"></td>
     <td><img src="https://user-images.githubusercontent.com/100859587/177048093-04c21274-d5db-4ac5-b439-e293ec498cea.jpg"></td>
   </tr>
   <tr>
