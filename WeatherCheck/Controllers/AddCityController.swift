@@ -41,7 +41,6 @@ class AddCityController: UIViewController {
     private let cityTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Berlin"
-        tf.tintColor = .black
         tf.textAlignment = .center
         tf.layer.cornerRadius = 10
         tf.layer.borderColor = UIColor.lightGray.cgColor
@@ -57,6 +56,7 @@ class AddCityController: UIViewController {
         button.titleLabel?.textColor = .white
         button.backgroundColor = .systemGreen
         button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(handleSearchTapped), for: .touchUpInside)
         
         return button
     }()
@@ -76,6 +76,10 @@ class AddCityController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = R.Colors.background
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleGestureTapped))
+        gesture.delegate = self
+        view.addGestureRecognizer(gesture)
+        
         configureUI()
         layoutViews()
     }
@@ -89,12 +93,14 @@ class AddCityController: UIViewController {
         mainStack.addArrangedSubview(cityTextField)
         mainStack.addArrangedSubview(searchButton)
         mainStack.addArrangedSubview(statusLabel)
+        
+        cityTextField.becomeFirstResponder()
     }
     
     private func layoutViews() {
         content.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-10)
+            make.centerY.equalToSuperview().offset(-20)
         }
         
         mainStack.snp.makeConstraints { make in
@@ -115,5 +121,20 @@ class AddCityController: UIViewController {
     }
     
     //MARK: - Selectors
+    
+    @objc func handleSearchTapped() {
+        print("Search tapped")
+    }
+    
+    @objc func handleGestureTapped() {
+        dismiss(animated: true)
+    }
 }
 
+//MARK: - UIGestureRecognizerDelegate
+
+extension AddCityController : UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return touch.view == self.view
+    }
+}
