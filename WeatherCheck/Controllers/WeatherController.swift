@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SkeletonView
+import CoreLocation
 
 protocol WeatherControllerDelegate: AnyObject {
     func didUpdateWeather(model: Condition)
@@ -57,6 +58,16 @@ class WeatherController: UIViewController {
     
     private let weatherManager = WeatherManager()
     
+    private let defaultCity = "San Diego"
+    
+    private lazy var locationManager: CLLocationManager = {
+        let manager = CLLocationManager()
+        manager.delegate = self
+        return manager
+    }()
+    
+    private let cacheManager = CacheManager()
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -66,7 +77,10 @@ class WeatherController: UIViewController {
         configureUI()
         layoutViews()
         makeAnimation()
-        fetchData()
+        
+        let city = cacheManager.getCachedCity() ?? defaultCity
+        fetchData(byCity: city)
+        
     }
     
     //MARK: - Helpers
@@ -102,8 +116,8 @@ class WeatherController: UIViewController {
         detailsLabel.showAnimatedGradientSkeleton()
     }
     
-    func fetchData() {
-        weatherManager.fetchWeather(byCity: "San Diego") { [weak self] result in
+    func fetchData(byCity city: String) {
+        weatherManager.fetchWeather(byCity: city) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let weatherData):
@@ -129,7 +143,19 @@ class WeatherController: UIViewController {
     //MARK: - Selectors
     
     @objc func handleUpdate() {
-        print("Update tapped")
+        switch locationManager.authorizationStatus {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .authorizedAlways:
+            locationManager.requestLocation()
+        case .authorizedWhenInUse:
+            locationManager.requestLocation()
+        @unknown default:
+            let alert = UIAlertController(title: "Location needed", message: "Authorize location", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+            alert.addAction(action)
+            self.present(alert, animated: true)
+        }
     }
     
     @objc func handleAdd() {
@@ -147,5 +173,30 @@ extension WeatherController : WeatherControllerDelegate {
             guard let self = self else { return }
             self.updateView(withModel: model)
         })
+    }
+}
+
+extension WeatherController : CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            manager.stopUpdatingLocation()
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            print(lat, lon)
+            weatherManager.fetchWeather(byCoordinates: lat, and: lon) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let weatherData):
+                    print("Weather data: \(weatherData)")
+                    self.updateView(withModel: weatherData)
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        
     }
 }

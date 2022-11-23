@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		354D4F83292EA527007CCB44 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354D4F82292EA527007CCB44 /* CacheManager.swift */; };
 		35815BA2292D5699002E9746 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35815BA1292D5699002E9746 /* AppDelegate.swift */; };
 		35815BA4292D5699002E9746 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35815BA3292D5699002E9746 /* SceneDelegate.swift */; };
 		35815BA6292D5699002E9746 /* WeatherController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35815BA5292D5699002E9746 /* WeatherController.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		354D4F82292EA527007CCB44 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		35815B9E292D5699002E9746 /* WeatherCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35815BA1292D5699002E9746 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35815BA3292D5699002E9746 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			children = (
 				35815BB6292D8B65002E9746 /* Resourses.swift */,
 				35815BC6292D99AC002E9746 /* Extensions.swift */,
+				354D4F82292EA527007CCB44 /* CacheManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -190,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				35815BCA292D9A7B002E9746 /* AddCityController.swift in Sources */,
+				354D4F83292EA527007CCB44 /* CacheManager.swift in Sources */,
 				35815BA6292D5699002E9746 /* WeatherController.swift in Sources */,
 				35815BB7292D8B65002E9746 /* Resourses.swift in Sources */,
 				35815BC3292D90AE002E9746 /* WeatherManager.swift in Sources */,
