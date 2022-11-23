@@ -44,7 +44,7 @@ class WeatherController: UIViewController {
     
     private let mainImage: UIImageView = {
         let view = UIImageView()
-        view.image = R.Images.clear
+        view.image = R.Images.Weather.clear
         view.contentMode = .scaleAspectFit
         view.isSkeletonable = true
         
@@ -99,7 +99,7 @@ class WeatherController: UIViewController {
     }
     
     func fetchData() {
-        weatherManager.fetchWeather(byCity: "Berlin") { [weak self] result in
+        weatherManager.fetchWeather(byCity: "San Diego") { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let weatherData):
@@ -111,14 +111,15 @@ class WeatherController: UIViewController {
         }
     }
     
-    private func updateView(withModel data: WeatherModel) {
+    private func updateView(withModel data: Condition) {
         mainImage.hideSkeleton()
         degreeLabel.hideSkeleton()
         detailsLabel.hideSkeleton()
         
-        degreeLabel.text = data.main.temp.convertToString().appending("°C")
-        detailsLabel.text = data.weather.first?.main
-        navigationItem.title = data.name
+        degreeLabel.text = data.temp.toString().appending("°C")
+        detailsLabel.text = data.conditionDescription
+        navigationItem.title = data.countryName
+        mainImage.image = data.image
     }
     
     //MARK: - Selectors

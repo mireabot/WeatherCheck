@@ -10,7 +10,7 @@ import Alamofire
 
 struct WeatherManager {
     
-    func fetchWeather(byCity city: String, completion: @escaping(Result<WeatherModel, Error>)-> Void) {
+    func fetchWeather(byCity city: String, completion: @escaping(Result<Condition, Error>)-> Void) {
         
         let query = city.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? city
         
@@ -19,7 +19,8 @@ struct WeatherManager {
         AF.request(path).responseDecodable(of: WeatherModel.self, queue: .main, decoder: JSONDecoder()) { (response) in
             switch response.result {
             case .success(let data):
-                completion(.success(data))
+                let model = data.model
+                completion(.success(model))
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -19,7 +19,19 @@ enum R {
     }
     
     enum Images {
-        static var clear = UIImage(named: "imClear")
+        
+        enum Weather {
+            static var clear = UIImage(named: "imClear")
+            static var atmosphere = UIImage(named: "imAtmosphere")
+            static var clouds = UIImage(named: "imClouds")
+            static var drizzle = UIImage(named: "imDrizzle")
+            static var rain = UIImage(named: "imRain")
+            static var snow = UIImage(named: "imSnow")
+            static var sun = UIImage(named: "imSun")
+            static var thunderstorm = UIImage(named: "imThunderstorm")
+        }
+        
+        enum System { static var sad = UIImage(named: "imSad") }
     }
     
     enum API {
