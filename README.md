@@ -1,5 +1,5 @@
 # WeatherCheck
-Forecast iOS app which provides live temparature and description both ways: ## search by city of ## by current location.
+Forecast iOS app which provides live temparature and description both ways: **search by city** or **by current location**.
 
 # Tech stack: 
 - UIKit and no storyboards
