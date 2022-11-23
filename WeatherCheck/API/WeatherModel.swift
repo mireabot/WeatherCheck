@@ -13,7 +13,7 @@ struct WeatherModel: Codable {
     let weather: [Weather]
     
     var model: Condition {
-        return Condition(countryName: name,
+        return Condition(cityName: name,
                          temp: main.temp.toInt(),
                          conditionID: weather.first?.id ?? 0,
                          conditionDescription: weather.first?.main ?? "")
@@ -29,7 +29,7 @@ struct Weather : Codable {
 }
 
 struct Condition {
-    let countryName: String
+    let cityName: String
     let temp: Int
     let conditionID: Int
     let conditionDescription: String

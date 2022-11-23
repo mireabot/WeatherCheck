@@ -8,9 +8,23 @@
 import UIKit
 import Alamofire
 
+enum ManagerErrors: Error, LocalizedError {
+    case unknown
+    case invalidCity
+    
+    var errorDescription: String? {
+        switch self {
+        case .unknown:
+            return "Unknown error found!"
+        case .invalidCity:
+            return "Invalid city entered!"
+        }
+    }
+}
+
 struct WeatherManager {
     
-    func fetchWeather(byCity city: String, completion: @escaping(Result<Condition, Error>)-> Void) {
+    func fetchWeather(byCity city: String, completion: @escaping(Result<Condition, ManagerErrors>)-> Void) {
         
         let query = city.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? city
         
@@ -21,8 +35,15 @@ struct WeatherManager {
             case .success(let data):
                 let model = data.model
                 completion(.success(model))
-            case .failure(let error):
-                completion(.failure(error))
+            case .failure:
+                switch response.response?.statusCode {
+                case 404: completion(.failure(ManagerErrors.invalidCity))
+                    
+                case .none:
+                    completion(.failure(ManagerErrors.unknown))
+                case .some(_):
+                    completion(.failure(ManagerErrors.unknown))
+                }
             }
         }
     }

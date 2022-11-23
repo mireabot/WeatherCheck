@@ -42,4 +42,15 @@ enum R {
     enum Colors {
         static var background = UIColor.init(white: 0.3, alpha: 0.4)
     }
+    
+    enum Strings {
+        
+        enum Errors {
+            static var empty = "City field cannot be empty!"
+        }
+        
+        enum Success {
+            static var success = "Found successfuly!"
+        }
+    }
 }

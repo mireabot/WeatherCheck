@@ -9,6 +9,10 @@ import UIKit
 import SnapKit
 import SkeletonView
 
+protocol WeatherControllerDelegate: AnyObject {
+    func didUpdateWeather(model: Condition)
+}
+
 class WeatherController: UIViewController {
     //MARK: - Properties
     
@@ -118,7 +122,7 @@ class WeatherController: UIViewController {
         
         degreeLabel.text = data.temp.toString().appending("°C")
         detailsLabel.text = data.conditionDescription
-        navigationItem.title = data.countryName
+        navigationItem.title = data.cityName
         mainImage.image = data.image
     }
     
@@ -129,10 +133,19 @@ class WeatherController: UIViewController {
     }
     
     @objc func handleAdd() {
-        print("Add tapped")
         let controller = AddCityController()
         controller.modalPresentationStyle = .fullScreen
         controller.modalTransitionStyle = .crossDissolve
+        controller.delegate = self
         present(controller, animated: true)
+    }
+}
+
+extension WeatherController : WeatherControllerDelegate {
+    func didUpdateWeather(model: Condition) {
+        presentedViewController?.dismiss(animated: true, completion: { [weak self] in
+            guard let self = self else { return }
+            self.updateView(withModel: model)
+        })
     }
 }

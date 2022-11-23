@@ -11,6 +11,10 @@ import SnapKit
 class AddCityController: UIViewController {
     //MARK: - Properties
     
+    private let weatherManager = WeatherManager()
+    
+    weak var delegate : WeatherControllerDelegate?
+    
     private let content: UIView = {
         let view = UIView()
         view.backgroundColor = .secondarySystemGroupedBackground
@@ -71,6 +75,13 @@ class AddCityController: UIViewController {
         return label
     }()
     
+    private let searchActivity: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView()
+        view.hidesWhenStopped = true
+        
+        return view
+    }()
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +95,11 @@ class AddCityController: UIViewController {
         layoutViews()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        cityTextField.becomeFirstResponder()
+    }
+    
     //MARK: - Helpers
     
     private func configureUI() {
@@ -92,9 +108,10 @@ class AddCityController: UIViewController {
         mainStack.addArrangedSubview(titleLabel)
         mainStack.addArrangedSubview(cityTextField)
         mainStack.addArrangedSubview(searchButton)
+        mainStack.addArrangedSubview(searchActivity)
         mainStack.addArrangedSubview(statusLabel)
         
-        cityTextField.becomeFirstResponder()
+        statusLabel.isHidden = true
     }
     
     private func layoutViews() {
@@ -120,10 +137,48 @@ class AddCityController: UIViewController {
         }
     }
     
+    private func searchForCity(with query: String) {
+        searchActivity.startAnimating()
+        weatherManager.fetchWeather(byCity: query) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let model):
+                self.showSuccess(with: model)
+                self.searchActivity.stopAnimating()
+            case .failure(let error):
+                self.showSearchError(with: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func showSearchError(with title: String) {
+        statusLabel.isHidden = false
+        statusLabel.textColor = .systemRed
+        statusLabel.text = title
+        searchActivity.isHidden = true
+    }
+    
+    private func showSuccess(with model: Condition) {
+        statusLabel.isHidden = false
+        statusLabel.textColor = .systemGreen
+        statusLabel.text = R.Strings.Success.success
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.didUpdateWeather(model: model)
+        }
+    }
+    
     //MARK: - Selectors
     
     @objc func handleSearchTapped() {
-        print("Search tapped")
+        view.endEditing(true)
+        statusLabel.isHidden = true
+        guard let query = cityTextField.text, !query.isEmpty else {
+            showSearchError(with: R.Strings.Errors.empty)
+            return
+        }
+        searchForCity(with: query)
     }
     
     @objc func handleGestureTapped() {
@@ -137,4 +192,8 @@ extension AddCityController : UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == self.view
     }
+}
+
+extension AddCityController : WeatherControllerDelegate {
+    func didUpdateWeather(model: Condition) {}
 }
